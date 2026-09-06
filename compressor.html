@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processor | ToolCraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .tool-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            width: 90%;
+            text-align: center;
+        }
+
+        .tool-container h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .tool-container p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        /* خيارات الأداة (الأيقونتين) */
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .mode-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .mode-card.active {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .mode-card i {
+            font-size: 1.5rem;
+            color: #818cf8;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .mode-card h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #f8fafc;
+        }
+
+        .mode-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .upload-box {
+            border: 2px dashed rgba(99, 102, 241, 0.4);
+            padding: 30px 20px;
+            border-radius: 16px;
+            background: rgba(99, 102, 241, 0.03);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin-bottom: 25px;
+        }
+
+        .upload-box:hover {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .upload-box i {
+            font-size: 2.2rem;
+            color: #818cf8;
+            margin-bottom: 10px;
+        }
+
+        .upload-box input {
+            display: none;
+        }
+
+        .btn-action {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            display: none;
+            text-align: center;
+        }
+
+        .result-section img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+            max-height: 220px;
+            object-fit: contain;
+        }
+
+        .stats-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .stats-box div {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fa-solid fa-layer-group"></i> ToolCraft</a>
+        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-arrow-left"></i> Back to Tools</a>
+    </header>
+
+    <div class="tool-container">
+        <h1>Image Processor</h1>
+        <p>Choose what you want to do with your image:</p>
+
+        <!-- اختيار الوضع (الأيقونتين) -->
+        <div class="mode-selector">
+            <div class="mode-card active" id="modeCompress" onclick="setMode('compress')">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <h4>Compress File Size</h4>
+                <p>Reduce KB size without changing image dimensions.</p>
+            </div>
+            <div class="mode-card" id="modeResize" onclick="setMode('resize')">
+                <i class="fa-solid fa-expand"></i>
+                <h4>Resize Dimensions</h4>
+                <p>Visually shrink the image size (e.g., 50% smaller).</p>
+            </div>
+        </div>
+
+        <label class="upload-box" id="dropZone">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>Choose an image or drag it here</h3>
+            <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: var(--text-muted);">Supports PNG, JPG, JPEG, WEBP</p>
+            <input type="file" id="imageInput" accept="image/*">
+        </label>
+
+        <div class="result-section" id="resultSection">
+            <h3 style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> Processed Successfully!</h3>
+            
+            <div class="stats-box">
+                <div>Original: <b id="originalSize" style="color: #f87171;">0 KB</b></div>
+                <div>Result: <b id="compressedSize" style="color: #34d399;">0 KB</b></div>
+            </div>
+
+            <div id="imagePreviewContainer"></div>
+            <br>
+            <a id="downloadBtn" class="btn-action" download="processed-image.jpg"><i class="fa-solid fa-download"></i> Download Image</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ToolCraft. Secure & Fast Browser Processing.</p>
+    </footer>
+
+    <script>
+        let currentMode = 'compress'; // الوضع الافتراضي
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('modeCompress').classList.remove('active');
+            document.getElementById('modeResize').classList.remove('active');
+            
+            if (mode === 'compress') {
+                document.getElementById('modeCompress').classList.add('active');
+            } else {
+                document.getElementById('modeResize').classList.add('active');
+            }
+        }
+
+        const imageInput = document.getElementById('imageInput');
+        const resultSection = document.getElementById('resultSection');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const originalSizeEl = document.getElementById('originalSize');
+        const compressedSizeEl = document.getElementById('compressedSize');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const originalSizeKB = (file.size / 1024).toFixed(1);
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (currentMode === 'resize') {
+                        // تصغير أبعاد الصورة الفعلي للنصف (مثلاً عشان المستخدم يشوفها صغرت قدامه بالعين)
+                        width = Math.floor(img.width * 0.5);
+                        height = Math.floor(img.height * 0.5);
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // جودة مناسبة للحفاظ على الوضوح وتخفيف الوزن
+                    const quality = currentMode === 'compress' ? 0.65 : 0.85;
+                    const processedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+                    imagePreviewContainer.innerHTML = `<img src="${processedDataUrl}" alt="Processed Image">`;
+                    
+                    fetch(processedDataUrl)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const processedSizeKB = (blob.size / 1024).toFixed(1);
+
+                            originalSizeEl.innerText = originalSizeKB + ' KB';
+                            compressedSizeEl.innerText = processedSizeKB + ' KB';
+                            
+                            downloadBtn.href = processedDataUrl;
+                            resultSection.style.display = 'block';
+                        });
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

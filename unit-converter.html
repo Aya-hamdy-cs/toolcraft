@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Unit Converter - ToolCraft</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 8%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .tool-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* تبويبات الفئات (الطول، الوزن، الحجم...) */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 650px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #6366f1;
+        }
+
+        .swap-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #818cf8;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin: 20px auto 0;
+            transition: transform 0.2s;
+        }
+
+        .swap-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .result-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #818cf8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">ToolCraft</a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    </header>
+
+    <div class="container">
+        <div class="tool-box">
+            <h1>Advanced Unit Converter</h1>
+            <p class="subtitle">Convert seamlessly between worldwide units for length, weight, temperature, area, and data storage.</p>
+
+            <!-- فئات الوحدات -->
+            <div class="category-tabs">
+                <button class="tab-btn active" onclick="setCategory('length')">Length</button>
+                <button class="tab-btn" onclick="setCategory('weight')">Weight</button>
+                <button class="tab-btn" onclick="setCategory('temperature')">Temperature</button>
+                <button class="tab-btn" onclick="setCategory('area')">Area</button>
+                <button class="tab-btn" onclick="setCategory('data')">Data Storage</button>
+            </div>
+
+            <!-- نموذج التحويل -->
+            <div class="converter-grid">
+                <div class="input-group">
+                    <label>From</label>
+                    <input type="number" id="fromValue" value="1" oninput="convert()">
+                    <select id="fromUnit" onchange="convert()"></select>
+                </div>
+
+                <div class="swap-icon" title="Swap Units" onclick="swapUnits()">
+                    <i class="fa-solid fa-right-left"></i>
+                </div>
+
+                <div class="input-group">
+                    <label>To</label>
+                    <input type="number" id="toValue" readonly style="background: rgba(15,23,42,0.5); cursor: not-allowed;">
+                    <select id="toUnit" onchange="convert()"></select>
+                </div>
+            </div>
+
+            <div class="result-box" id="resultDisplay">
+                Result: 0
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ToolCraft. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // بيانات الوحدات ومعاملات التحويل مقارنة بالوحدة الأساسية لكل فئة
+        const unitsData = {
+            length: {
+                name: "Length",
+                base: "m",
+                units: {
+                    mm: { name: "Millimeter (mm)", rate: 0.001 },
+                    cm: { name: "Centimeter (cm)", rate: 0.01 },
+                    m: { name: "Meter (m)", rate: 1 },
+                    km: { name: "Kilometer (km)", rate: 1000 },
+                    in: { name: "Inch (in)", rate: 0.0254 },
+                    ft: { name: "Foot (ft)", rate: 0.3048 },
+                    yd: { name: "Yard (yd)", rate: 0.9144 },
+                    mi: { name: "Mile (mi)", rate: 1609.344 }
+                }
+            },
+            weight: {
+                name: "Weight",
+                base: "g",
+                units: {
+                    mg: { name: "Milligram (mg)", rate: 0.001 },
+                    g: { name: "Gram (g)", rate: 1 },
+                    kg: { name: "Kilogram (kg)", rate: 1000 },
+                    t: { name: "Metric Ton (t)", rate: 1000000 },
+                    oz: { name: "Ounce (oz)", rate: 28.3495 },
+                    lb: { name: "Pound (lb)", rate: 453.592 }
+                }
+            },
+            temperature: {
+                name: "Temperature",
+                units: {
+                    C: { name: "Celsius (°C)" },
+                    F: { name: "Fahrenheit (°F)" },
+                    K: { name: "Kelvin (K)" }
+                }
+            },
+            area: {
+                name: "Area",
+                base: "m2",
+                units: {
+                    m2: { name: "Square Meter (m²)", rate: 1 },
+                    km2: { name: "Square Kilometer (km²)", rate: 1000000 },
+                    cm2: { name: "Square Centimeter (cm²)", rate: 0.0001 },
+                    ha: { name: "Hectare (ha)", rate: 10000 },
+                    acre: { name: "Acre", rate: 4046.86 },
+                    sqft: { name: "Square Foot (ft²)", rate: 0.092903 }
+                }
+            },
+            data: {
+                name: "Data Storage",
+                base: "B",
+                units: {
+                    b: { name: "Byte (B)", rate: 1 },
+                    KB: { name: "Kilobyte (KB)", rate: 1024 },
+                    MB: { name: "Megabyte (MB)", rate: 1048576 },
+                    GB: { name: "Gigabyte (GB)", rate: 1073741824 },
+                    TB: { name: "Terabyte (TB)", rate: 1099511627776 }
+                }
+            }
+        };
+
+        let currentCategory = 'length';
+
+        function setCategory(category) {
+            currentCategory = category;
+            
+            // تغيير الـ Active Class للأزرار
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            populateSelects();
+            convert();
+        }
+
+        function populateSelects() {
+            const cat = unitsData[currentCategory];
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            const keys = Object.keys(cat.units);
+            keys.forEach((key, index) => {
+                fromSelect.add(new Option(cat.units[key].name, key));
+                toSelect.add(new Option(cat.units[key].name, key));
+            });
+
+            // اختيار عناصر افتراضية مختلفة لتجربة سريعة
+            if (keys.length > 1) {
+                toSelect.selectedIndex = 1;
+            }
+        }
+
+        function convert() {
+            const val = parseFloat(document.getElementById('fromValue').value) || 0;
+            const fromU = document.getElementById('fromUnit').value;
+            const toU = document.getElementById('toUnit').value;
+            let result = 0;
+
+            if (currentCategory === 'temperature') {
+                // معالجة خاصة لدرجات الحرارة
+                let celsius = val;
+                if (fromU === 'F') celsius = (val - 32) * 5/9;
+                if (fromU === 'K') celsius = val - 273.15;
+
+                if (toU === 'C') result = celsius;
+                else if (toU === 'F') result = (celsius * 9/5) + 32;
+                else if (toU === 'K') result = celsius + 273.15;
+            } else {
+                // باقي الوحدات تعتمد على نظام الـ Rate
+                const cat = unitsData[currentCategory];
+                const baseValue = val * cat.units[fromU].rate;
+                result = baseValue / cat.units[toU].rate;
+            }
+
+            document.getElementById('toValue').value = result.toFixed(4);
+            document.getElementById('resultDisplay').innerText = `Result: ${val} ${document.getElementById('fromUnit').selectedOptions[0].text} = ${result.toLocaleString(undefined, {maximumFractionDigits: 4})} ${document.getElementById('toUnit').selectedOptions[0].text}`;
+        }
+
+        function swapUnits() {
+            const fromU = document.getElementById('fromUnit');
+            const toU = document.getElementById('toUnit');
+            const temp = fromU.value;
+            fromU.value = toU.value;
+            toU.value = temp;
+            convert();
+        }
+
+        // تشغيل أولي عند تحميل الصفحة
+        populateSelects();
+        convert();
+    </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File & Text Converter | ToolCraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .tool-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            width: 90%;
+        }
+
+        .tool-container h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .tool-container p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-btn:hover, .tool-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--text-main);
+            border-color: #6366f1;
+        }
+
+        .section-box {
+            display: none;
+        }
+
+        .section-box.active {
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            color: var(--text-main);
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            border-color: #6366f1;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .result-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            color: #818cf8;
+            font-size: 1rem;
+            min-height: 100px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fa-solid fa-layer-group"></i> ToolCraft</a>
+        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;"><i class="fa-solid fa-arrow-left"></i> Back to Tools</a>
+    </header>
+
+    <div class="tool-container">
+        <h1>File & Text Converter Hub</h1>
+        <p>Convert your text into downloadable text files or translate languages instantly.</p>
+
+        <div class="toolbar">
+            <button class="tool-btn active" id="tabDownloadBtn"><i class="fa-solid fa-file-arrow-down"></i> Export to File</button>
+            <button class="tool-btn" id="tabTranslateBtn"><i class="fa-solid fa-language"></i> Quick Translate</button>
+        </div>
+
+        <div class="section-box active" id="downloadSection">
+            <textarea id="exportInput" placeholder="Type or paste your content here to export..."></textarea>
+            
+            <div class="actions">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Saves securely as a text file (.txt)</span>
+                <div class="btn-group">
+                    <button class="btn-secondary" id="copyBtn"><i class="fa-regular fa-copy"></i> Copy Text</button>
+                    <button class="btn-action" id="downloadBtn"><i class="fa-solid fa-download"></i> Download File</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box" id="translateSection">
+            <textarea id="translateInput" placeholder="Enter text to translate..."></textarea>
+            
+            <div class="result-box" id="translateResult">Translation result will appear here...</div>
+
+            <div class="actions">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">Target:</label>
+                    <select id="targetLang" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 15px; border-radius: 10px; outline: none; cursor: pointer;">
+                        <option value="ar">Arabic (العربية)</option>
+                        <option value="en">English (English)</option>
+                        <option value="fr">French (Français)</option>
+                    </select>
+                </div>
+                <button class="btn-action" id="translateBtn"><i class="fa-solid fa-globe"></i> Translate Now</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ToolCraft. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const tabDownloadBtn = document.getElementById('tabDownloadBtn');
+        const tabTranslateBtn = document.getElementById('tabTranslateBtn');
+        const downloadSection = document.getElementById('downloadSection');
+        const translateSection = document.getElementById('translateSection');
+
+        tabDownloadBtn.addEventListener('click', () => {
+            tabDownloadBtn.classList.add('active');
+            tabTranslateBtn.classList.remove('active');
+            downloadSection.classList.add('active');
+            translateSection.classList.remove('active');
+        });
+
+        tabTranslateBtn.addEventListener('click', () => {
+            tabTranslateBtn.classList.add('active');
+            tabDownloadBtn.classList.remove('active');
+            translateSection.classList.add('active');
+            downloadSection.classList.remove('active');
+        });
+
+        const exportInput = document.getElementById('exportInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // زرار التحميل كملف نصي بحت (.txt)
+        downloadBtn.addEventListener('click', () => {
+            const text = exportInput.value;
+            if (!text) {
+                alert('Please enter some text to download.');
+                return;
+            }
+
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my-document.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // زرار نسخ النص مباشرة للحافظة
+        copyBtn.addEventListener('click', () => {
+            const text = exportInput.value;
+            if (!text) {
+                alert('Please enter some text to copy.');
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+
+        const translateInput = document.getElementById('translateInput');
+        const targetLang = document.getElementById('targetLang');
+        const translateBtn = document.getElementById('translateBtn');
+        const translateResult = document.getElementById('translateResult');
+
+        translateBtn.addEventListener('click', async () => {
+            const text = translateInput.value.trim();
+            if (!text) {
+                alert('Please enter text to translate.');
+                return;
+            }
+
+            translateResult.textContent = 'Translating...';
+
+            try {
+                const target = targetLang.value;
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=` + encodeURIComponent(text);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let translatedText = '';
+                if (data && data[0]) {
+                    data[0].forEach(item => {
+                        if (item[0]) translatedText += item[0];
+                    });
+                }
+
+                translateResult.textContent = translatedText || 'Translation failed.';
+            } catch (error) {
+                translateResult.textContent = 'Error connecting to translation service.';
+            }
+        });
+    </script>
+
+</body>
+</html>

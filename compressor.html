@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,7 +78,6 @@
             font-size: 0.95rem;
         }
 
-        /* خيارات الأداة (الأيقونتين) */
         .mode-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -120,6 +121,46 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             margin: 0;
+        }
+
+        /* صندوق التحكم في المدخلات حسب الوضع */
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            text-align: left;
+            display: none;
+        }
+
+        .controls-panel.active {
+            display: block;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .control-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
         }
 
         .upload-box {
@@ -222,12 +263,32 @@
             <div class="mode-card active" id="modeCompress" onclick="setMode('compress')">
                 <i class="fa-solid fa-file-arrow-down"></i>
                 <h4>Compress File Size</h4>
-                <p>Reduce KB size without changing image dimensions.</p>
+                <p>Reduce KB size smartly.</p>
             </div>
             <div class="mode-card" id="modeResize" onclick="setMode('resize')">
                 <i class="fa-solid fa-expand"></i>
                 <h4>Resize Dimensions</h4>
-                <p>Visually shrink the image size (e.g., 50% smaller).</p>
+                <p>Set custom width & height.</p>
+            </div>
+        </div>
+
+        <!-- لوحة خيارات ضغط الحجم -->
+        <div class="controls-panel active" id="compressPanel">
+            <div class="control-group">
+                <label for="qualityRange">Compression Quality (0.1 to 1.0):</label>
+                <input type="number" id="qualityInput" value="0.85" min="0.1" max="1.0" step="0.05">
+            </div>
+        </div>
+
+        <!-- لوحة خيارات تغيير الأبعاد -->
+        <div class="controls-panel" id="resizePanel">
+            <div class="control-group">
+                <label for="widthInput">Target Width (px):</label>
+                <input type="number" id="widthInput" placeholder="Leave empty for auto scale">
+            </div>
+            <div class="control-group" style="margin-top: 10px;">
+                <label for="heightInput">Target Height (px):</label>
+                <input type="number" id="heightInput" placeholder="Leave empty for auto scale">
             </div>
         </div>
 
@@ -257,17 +318,21 @@
     </footer>
 
     <script>
-        let currentMode = 'compress'; // الوضع الافتراضي
+        let currentMode = 'compress';
 
         function setMode(mode) {
             currentMode = mode;
             document.getElementById('modeCompress').classList.remove('active');
             document.getElementById('modeResize').classList.remove('active');
+            document.getElementById('compressPanel').classList.remove('active');
+            document.getElementById('resizePanel').classList.remove('active');
             
             if (mode === 'compress') {
                 document.getElementById('modeCompress').classList.add('active');
+                document.getElementById('compressPanel').classList.add('active');
             } else {
                 document.getElementById('modeResize').classList.add('active');
+                document.getElementById('resizePanel').classList.add('active');
             }
         }
 
@@ -293,21 +358,44 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
 
-                    let width = img.width;
-                    let height = img.height;
+                    // تفعيل أعلى جودة تنعيم لمنع بهتان الصورة أو تشويشها نهائياً
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
+                    let width = img.naturalWidth;
+                    let height = img.naturalHeight;
+                    let quality = 0.85;
 
                     if (currentMode === 'resize') {
-                        // تصغير أبعاد الصورة الفعلي للنصف (مثلاً عشان المستخدم يشوفها صغرت قدامه بالعين)
-                        width = Math.floor(img.width * 0.5);
-                        height = Math.floor(img.height * 0.5);
+                        const userWidth = parseInt(document.getElementById('widthInput').value);
+                        const userHeight = parseInt(document.getElementById('heightInput').value);
+
+                        if (userWidth && userHeight) {
+                            width = userWidth;
+                            height = userHeight;
+                        } else if (userWidth) {
+                            height = Math.round((userWidth / img.naturalWidth) * img.naturalHeight);
+                            width = userWidth;
+                        } else if (userHeight) {
+                            width = Math.round((userHeight / img.naturalHeight) * img.naturalWidth);
+                            height = userHeight;
+                        } else {
+                            // لو سابهم فاضيين يقلل الأبعاد للنصف كافتراضي ذكي
+                            width = Math.round(img.naturalWidth * 0.5);
+                            height = Math.round(img.naturalHeight * 0.5);
+                        }
+                        quality = 0.92; // جودة عالية جداً في التغيير
+                    } else {
+                        const userQuality = parseFloat(document.getElementById('qualityInput').value);
+                        if (!isNaN(userQuality)) {
+                            quality = Math.max(0.1, Math.min(1.0, userQuality));
+                        }
                     }
 
                     canvas.width = width;
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // جودة مناسبة للحفاظ على الوضوح وتخفيف الوزن
-                    const quality = currentMode === 'compress' ? 0.65 : 0.85;
                     const processedDataUrl = canvas.toDataURL('image/jpeg', quality);
 
                     imagePreviewContainer.innerHTML = `<img src="${processedDataUrl}" alt="Processed Image">`;

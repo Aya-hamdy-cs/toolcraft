@@ -160,6 +160,8 @@
             border-radius: 10px;
             color: white;
             font-size: 0.95rem;
+            direction: ltr;
+            text-align: left;
         }
 
         .upload-box {
@@ -273,18 +275,18 @@
         <div class="controls-panel active" id="compressPanel">
             <div class="control-group">
                 <label for="qualityInput">Compression Quality (0.1 to 1.0):</label>
-                <input type="number" id="qualityInput" value="0.85" min="0.1" max="1.0" step="0.05" dir="ltr" lang="en">
+                <input type="text" inputmode="decimal" id="qualityInput" value="0.85">
             </div>
         </div>
 
         <div class="controls-panel" id="resizePanel">
             <div class="control-group">
                 <label for="widthInput">Target Width (px):</label>
-                <input type="number" id="widthInput" placeholder="Leave empty for auto scale" dir="ltr" lang="en">
+                <input type="text" inputmode="numeric" id="widthInput" placeholder="Leave empty for auto scale">
             </div>
             <div class="control-group" style="margin-top: 10px;">
                 <label for="heightInput">Target Height (px):</label>
-                <input type="number" id="heightInput" placeholder="Leave empty for auto scale" dir="ltr" lang="en">
+                <input type="text" inputmode="numeric" id="heightInput" placeholder="Leave empty for auto scale">
             </div>
         </div>
 
@@ -332,6 +334,14 @@
             }
         }
 
+        // Helper to clean Arabic digits if any enter
+        function parseEnglishNumber(val) {
+            if (!val) return NaN;
+            const cleaned = val.replace(/[\u0660-\u0669]/g, d => d.charCodeAt(0) - 1630)
+                               .replace(/[\u06F0-\u06F9]/g, d => d.charCodeAt(0) - 1776);
+            return parseFloat(cleaned);
+        }
+
         const imageInput = document.getElementById('imageInput');
         const resultSection = document.getElementById('resultSection');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -362,16 +372,16 @@
                     let quality = 0.85;
 
                     if (currentMode === 'resize') {
-                        const userWidth = parseInt(document.getElementById('widthInput').value);
-                        const userHeight = parseInt(document.getElementById('heightInput').value);
+                        const userWidth = parseEnglishNumber(document.getElementById('widthInput').value);
+                        const userHeight = parseEnglishNumber(document.getElementById('heightInput').value);
 
-                        if (userWidth && userHeight) {
+                        if (!isNaN(userWidth) && !isNaN(userHeight)) {
                             width = userWidth;
                             height = userHeight;
-                        } else if (userWidth) {
+                        } else if (!isNaN(userWidth)) {
                             height = Math.round((userWidth / img.naturalWidth) * img.naturalHeight);
                             width = userWidth;
-                        } else if (userHeight) {
+                        } else if (!isNaN(userHeight)) {
                             width = Math.round((userHeight / img.naturalHeight) * img.naturalWidth);
                             height = userHeight;
                         } else {
@@ -380,7 +390,7 @@
                         }
                         quality = 0.92;
                     } else {
-                        const userQuality = parseFloat(document.getElementById('qualityInput').value);
+                        const userQuality = parseEnglishNumber(document.getElementById('qualityInput').value);
                         if (!isNaN(userQuality)) {
                             quality = Math.max(0.1, Math.min(1.0, userQuality));
                         }

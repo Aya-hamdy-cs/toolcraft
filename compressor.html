@@ -123,7 +123,6 @@
             margin: 0;
         }
 
-        /* صندوق التحكم في المدخلات حسب الوضع */
         .controls-panel {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
@@ -258,7 +257,6 @@
         <h1>Image Processor</h1>
         <p>Choose what you want to do with your image:</p>
 
-        <!-- اختيار الوضع (الأيقونتين) -->
         <div class="mode-selector">
             <div class="mode-card active" id="modeCompress" onclick="setMode('compress')">
                 <i class="fa-solid fa-file-arrow-down"></i>
@@ -272,23 +270,21 @@
             </div>
         </div>
 
-        <!-- لوحة خيارات ضغط الحجم -->
         <div class="controls-panel active" id="compressPanel">
             <div class="control-group">
-                <label for="qualityRange">Compression Quality (0.1 to 1.0):</label>
-                <input type="number" id="qualityInput" value="0.85" min="0.1" max="1.0" step="0.05">
+                <label for="qualityInput">Compression Quality (0.1 to 1.0):</label>
+                <input type="number" id="qualityInput" value="0.85" min="0.1" max="1.0" step="0.05" dir="ltr" lang="en">
             </div>
         </div>
 
-        <!-- لوحة خيارات تغيير الأبعاد -->
         <div class="controls-panel" id="resizePanel">
             <div class="control-group">
                 <label for="widthInput">Target Width (px):</label>
-                <input type="number" id="widthInput" placeholder="Leave empty for auto scale">
+                <input type="number" id="widthInput" placeholder="Leave empty for auto scale" dir="ltr" lang="en">
             </div>
             <div class="control-group" style="margin-top: 10px;">
                 <label for="heightInput">Target Height (px):</label>
-                <input type="number" id="heightInput" placeholder="Leave empty for auto scale">
+                <input type="number" id="heightInput" placeholder="Leave empty for auto scale" dir="ltr" lang="en">
             </div>
         </div>
 
@@ -358,7 +354,6 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
 
-                    // تفعيل أعلى جودة تنعيم لمنع بهتان الصورة أو تشويشها نهائياً
                     ctx.imageSmoothingEnabled = true;
                     ctx.imageSmoothingQuality = 'high';
 
@@ -380,11 +375,10 @@
                             width = Math.round((userHeight / img.naturalHeight) * img.naturalWidth);
                             height = userHeight;
                         } else {
-                            // لو سابهم فاضيين يقلل الأبعاد للنصف كافتراضي ذكي
                             width = Math.round(img.naturalWidth * 0.5);
                             height = Math.round(img.naturalHeight * 0.5);
                         }
-                        quality = 0.92; // جودة عالية جداً في التغيير
+                        quality = 0.92;
                     } else {
                         const userQuality = parseFloat(document.getElementById('qualityInput').value);
                         if (!isNaN(userQuality)) {

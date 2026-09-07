@@ -493,6 +493,9 @@
             <span class="logo">ToolCraft</span>
             <span class="pro-badge">PRO v1.0</span>
         </a>
+        <button onclick="translatePage()" class="lang-btn" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <i class="fa-solid fa-globe"></i> <span id="langBtnText">العربية</span>
+</button>
         <nav>
             <ul class="nav-links">
                 <li><a href="#tools-section">Tools</a></li>
@@ -650,5 +653,18 @@
             window.open(whatsappUrl, '_blank');
         }
     </script>
+    <script>
+    function translatePage() {
+        // التحقق من وجود شريط جوجل وتفعيله فوري
+        let combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+            combo.value = combo.value === 'ar' ? 'en' : 'ar';
+            combo.dispatchEvent(new Event('change'));
+            document.getElementById('langBtnText').innerText = combo.value === 'ar' ? 'English' : 'العربية';
+        } else {
+            alert("برجاء رفع الموقع على GitHub Pages لتفعيل الترجمة الفورية عبر الإنترنت.");
+        }
+    }
+</script>
 </body>
 </html>

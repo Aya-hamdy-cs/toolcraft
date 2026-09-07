@@ -493,9 +493,9 @@
             <span class="logo">ToolCraft</span>
             <span class="pro-badge">PRO v1.0</span>
         </a>
-      <button id="customLangBtn" onclick="quickTranslate()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;">
-    <i class="fa-solid fa-globe"></i> <span id="langText">العربية</span>
-</button>
+     <a href="https://translate.google.com/translate?sl=en&tl=ar&u=https://aya-hamdy-cs.github.io/toolcraft/" target="_blank" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; text-decoration: none; font-family: 'Plus Jakarta Sans', sans-serif; display: inline-flex; align-items: center; gap: 8px;">
+    <i class="fa-solid fa-globe"></i> <span>العربية</span>
+</a>
         <nav>
             <ul class="nav-links">
                 <li><a href="#tools-section">Tools</a></li>
@@ -653,19 +653,6 @@
             window.open(whatsappUrl, '_blank');
         }
     </script>
-   <script>
-    function quickTranslate() {
-        let currentLang = localStorage.getItem('site_lang') || 'en';
-        let targetLang = currentLang === 'en' ? 'ar' : 'en';
-        
-        // استخدام خدمة ترجمة فورية مبسطة وخفيفة تعمل مباشرة عبر الإنترنت
-        let pageText = document.body.innerText;
-        // توجيه الصفحة لترجمة جوجل المباشرة بدون عيوب الويدجت القديم
-        let currentUrl = window.location.href;
-        let translateUrl = `https://translate.google.com/translate?sl=en&tl=${targetLang}&u=` + encodeURIComponent(currentUrl);
-        
-        window.location.href = translateUrl;
-    }
-</script>
+   
 </body>
 </html>
